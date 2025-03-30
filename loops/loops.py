@@ -81,3 +81,22 @@ print(is_prime)
 # 9 check if all the elements in the list are unique. If a duplicate is found, exit the loop and print the duplicate
 
 items=["apple","banana","orange","apple","mango","banana"]
+
+unique_item = set()
+for item in items:
+    if item in unique_item:
+        print("dublicate item is:",item)
+        break
+    unique_item.add(item)
+
+#10 implmment an exponential backoff strategy that doubles the wait time between retries, statrting from 1 second but stop  after 5 retries
+import time
+wait_time = 1
+max_retries = 5
+attempts = 0
+
+while attempts < max_retries:
+    print("Attempt:",attempts + 1, "- wait time",wait_time,"seconds")
+    time.sleep(wait_time)
+    wait_time *= 2
+    attempts += 1
