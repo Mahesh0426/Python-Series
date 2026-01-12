@@ -93,3 +93,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+    for index, movie in  enumerate(movies, start=1):
+        print(f"{index}. {movie['name']}")
+        

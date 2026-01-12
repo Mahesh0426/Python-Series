@@ -6,7 +6,6 @@ client = MongoClient("mongodb+srv://youtubepy:youtubepy@cluster0.2gi2uk6.mongodb
 
 db = client["ytmanager"]
 video_collection = db["videos"]
-'p'
 # print(video_collection)
 def list_videos():
     for video in video_collection.find():
