@@ -42,3 +42,17 @@ b = [1, 2, 3]
 c = a
 print(a is b)   # False (they are two different objects in memory)
 print(a is c)   # True (they point to the same object)
+
+course = "Python Programming"
+print(course[+1], course[-1])  # 'y' and 'g'
+
+lord = "   Shree  \" Krishna"  # Using escape character for double quote (\"")
+print(lord) # Shree " Krishna
+print(lord.strip())  # Remove leading and trailing whitespace (trim in js)
+
+first = "mahesh"
+last = "kunmar"
+full_name = f"{first} {last}"  # f-string for string interpolation
+print(full_name)  # mahesh kunmar
+print(full_name.title())  # Mahesh Kunmar (first letter capitalized)
+

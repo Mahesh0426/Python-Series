@@ -50,7 +50,7 @@ print(result.format(name, language))
 
 #join
 languages = [ "Python", "C-sharp", "JavaScript", "Ruby" ]
-result = ", ".join(languages)
+result = ", ".join(languages) # Join elements of a list with a comma and space
 print(result)
 
 #length
@@ -63,10 +63,11 @@ print(len(lengthStr))
 #     print(letter)
 
 # / 
-print("He said, \"Python is most popular language\" ")
+print("He said, \"Python is most popular language\" ")   #Using escape character for double quote (\")
+print('It\'s a beautiful day')  #Using escape character for single quote (\')
 
 # print as it is using r
-print(r"c:\user\pwd")
+print(r"c:\user\pwd") #prints c:\user\pwd
 print(r"python/nlanguage")
 
 #in 
