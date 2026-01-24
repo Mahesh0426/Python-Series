@@ -1,7 +1,7 @@
 # numbers = [1, 2, 3, 4, 5]
 mixed = ["hello", 42, 3.14, True]
 fruits = ["apple", "banana", "cherry","orange"]
-# print(fruits)
+print(fruits)
 # print(fruits[0])  # First element
 # print(fruits[-1])  # Last element
 
@@ -11,13 +11,13 @@ fruits = ["apple", "banana", "cherry","orange"]
 # print(fruits[2:])
 
 #Modifying Elements
-fruits[0]= "blueberries"
+fruits[0]= "blueberries"  # it replace the value at index 0 with blueberries
 # print(fruits)
 # fruits[1:2]= "grapes" 
 # print(fruits)
-fruits[1:2]= ["grapes"]
+fruits[1:2]= ["grapes"] # it replace the value at index 1 with "grapes"
 # print(fruits)
-fruits[1:2]= []
+fruits[1:2]= [] # it remove the value at index 1
 # print(fruits)
 
 #insert (Add at a specific index) | list.insert(index, value)
@@ -48,7 +48,7 @@ fruits.extend(["Strawberry","Pineapple"])
 Frameworks = ["numpy","pandas","tensorflow","pytorch","Scikit-learn"]
 # for popular_framework in Frameworks:
     # print(popular_framework, end="-")
-    # print(popular_framework)
+    # print(popular_framework) #numpy-pandas-tensorflow-pytorch-Scikit-learn
 
 
 #Searching in a List

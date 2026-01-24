@@ -12,12 +12,20 @@ print("The capital of Nepal is:",countries.get("Nepal"))
 #Remove one fruit using the pop() method.
 
 fruits= {"Grapes":3,"Banana":8, "Apple":6}
-fruits["Orange"] = 4
-print(fruits)
+
+# fruits["Orange"] = 4
+# print(fruits)
+
+#pop() method removes the specified key-value pair | syntax: dict.pop(key)
 fruits.pop("Banana")
 print(fruits)
+
+# popitem() method removes the last added key-value pair | syntax: dict.popitem()
 # fruits.popitem()
 # print(fruits)
+
+
+
 
 # 3. Check if a key exists in a dictionary.
 # Given data = {"name": "Alice", "age": 25, "city": "New York"}, check if "age" exists in the dictionary.
@@ -42,17 +50,17 @@ else:
 # Example output for "hello": {'h': 1, 'e': 1, 'l': 2, 'o': 1}
 
 # Take input from user
-user_input = input("Enter a string: ")
+# user_input = input("Enter a string: ")
 
 # Initialize an empty dictionary to store character counts
 char_count = {}
 
 # Count each character in the string
-for char in user_input:
-    if char in char_count:
-        char_count[char] += 1
-    else:
-        char_count[char] = 1
+# for char in user_input:
+#     if char in char_count:
+#         char_count[char] += 1
+#     else:
+#         char_count[char] = 1
 
 # Display the result
 print("Character frequencies:", char_count)

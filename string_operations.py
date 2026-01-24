@@ -40,7 +40,7 @@ phone = "+61 456 789 123"
 result = phone.replace(" ", "")
 print(result) #+61456789123
 
-#split
+#split - it split into list 
 languages = "Python, C-sharp, JavaScript, TypeScript"
 result = languages.split(", ")
 print(result) #["Python", "C-sharp", "JavaScript", "TypeScript"]

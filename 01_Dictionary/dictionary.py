@@ -37,27 +37,27 @@ print("student dictionary after updating age", student)
 # student.popitem()
 # print("student dictionary after popping last key-value pair", student)
 
-print("My name is", student.get("name"))
-print("I live in ",student["city"])
+print("My name is", student.get("name"))  # output: ramesh
+print("I live in ",student["city"]) # output: Sydney
 student["name"]= "bishal"
-print("name after chnage",student)
+print("name after chnage",student) # output: {"name":"bishal", "age": 22, "city":"Sydney"}
 
 # for in  | Loop Through Dictionary
 # Print all keys and all values separately using a loop.
 for key in student:
     # print(item)
-    print(key, student[key])
+    print(key, student[key])  # output: name ramesh age 22 city Sydney
     
 # for key value
 # for key, value in student.items():
-#     print(key, value)
+#     print(key, value)  # output: name ramesh age 22 city Sydney
 
 # check if  exist 
 if "name" in student:
-    print("name is present in the dictionary")
+    print("name is present in the dictionary")  # output: name is present in the dictionary
 
 #length
-print("Length of student dictionary is ", len(student))
+print("Length of student dictionary is ", len(student))  # output: Length of student dictionary is  3
 
 #Nested Dictionary
 students = {
@@ -66,25 +66,22 @@ students = {
     "Mahesh": {"age": 21, "city": "Newtown"}
 }
 
-print(students["Mahesh"]["city"])  
-# Output: London
+print(students["Mahesh"]["city"])   # output: Newtown
 
 # Square Numbers
 square = {x:x**2 for x in range(1,6) }
-print(square)
-print(square.clear())
-print(square)
+print(square)  # output: {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+print(square.clear())  # output: None
+print(square)  # output: {}
 
 #Print Keys and Values Separately
 data = {"name": "Bishal", "age": 25, "city": "Newtown"}
 
 for key in data.keys():
-    print(key)
-# Output: name, age, city
+    print(key)  # output: name age city
 
 for value in data.values():
-    print(value)
-# Output: Alice, 25, New York
+    print(value)  # output: Bishal, 25, Newtown
 
 
 # Merge Two Dictionaries
@@ -92,5 +89,4 @@ dict1 = {"a": 1, "b": 2}
 dict2 = {"c": 3, "d": 4}
 
 merged_dict = dict1 | dict2  
-print(merged_dict)
-# Output: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+print(merged_dict)  # output: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
