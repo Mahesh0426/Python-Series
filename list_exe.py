@@ -14,6 +14,7 @@ print(cart)  # Output: ["milk", "brown bread", "butter", "eggs"]
 
 marks = [56, 78, 90, 45, 89, 92]
 marks.remove(min(marks))
+print(marks)
 marks.sort()
 print(marks[-1])
 

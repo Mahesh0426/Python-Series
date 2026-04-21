@@ -1,7 +1,8 @@
 # 1.Clean and Format User Input
 raw_name = "   maHeSh kunWar   "
 clean_name = raw_name.strip()
-print(clean_name.title()) #Mahesh Kunwar
+print(clean_name)
+# print(clean_name.title()) #Mahesh Kunwar
 
 # 2. Extract Domain From Email
 email = "  student123@university.edu  "
