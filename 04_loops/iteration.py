@@ -6,6 +6,10 @@ for i in range(5):
 fruits = ["apple", "banana", "cherry"]
 for fruit in fruits:
     print(fruit)
+    #output :
+    # apple
+    # banana
+    # cherry
 
 
 #while Loop (Runs Until a Condition is Met)

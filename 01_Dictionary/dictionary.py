@@ -16,14 +16,17 @@ student = {
 
 }
 print( "all the distionary item", student)
+# output  # all the distionary item {'name': 'ramesh', 'age': 22, 'city': 'Sydney'}
 
 # Add a New Key-Value Pair
 student["gender"] = "male"
 print("student dictionary after adding new key-value pair", student)
+# output  student dictionary after adding new key-value pair {'name': 'ramesh', 'age': 22, 'city': 'Sydney', 'gender': 'male'}
 
 #Update a Value
 student["age"] = 23
 print("student dictionary after updating age", student)
+# output  student dictionary after updating age {'name': 'ramesh', 'age': 23, 'city': 'Sydney', 'gender': 'male'}
 
 # Delete a Key-Value Pair
 # del student["gender"]

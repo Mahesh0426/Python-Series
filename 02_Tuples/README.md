@@ -49,6 +49,11 @@ print(numbers[:3])   # (10, 20, 30)
 print(numbers[2:])   # (30, 40, 50)
 ```
 
+# Key rule to remember
+
+In slicing, the start index is included
+The end index is excluded
+
 **3. length**
 
 ```Python

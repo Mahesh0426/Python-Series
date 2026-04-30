@@ -3,21 +3,26 @@
 # 1️⃣ Create a tuple with at least five numbers and print its sum.
 numbers = (1, 2, 3, 4, 5)
 print(sum(numbers))
+# output 15 
 
 # 2️⃣ Find the largest and smallest elements in a tuple.
 num = (2,5,8,9,11,23,45)
 print("Smallest element:", min(num))
+# output Smallest element: 2
 print("Largest element:", max(num))
+# output Largest element: 45
 
 # 3️⃣ Convert a list into a tuple.
 my_list = [1, 2, 3, 4, 5]
 my_tuple = tuple(my_list)
 print(my_tuple)
+# output (1,2,3,4,5)
 
 # 4️⃣ Check if a value exists in a tuple.
 my_tuple = (1, 2, 3, 4, 5)
 value = 3
 print(value in my_tuple)
+# output True
 
  # 5️⃣ Given a tuple (1, 2, 3, [4, 5]), modify the list inside the tuple to [40, 50].
 my_tuple = (1, 2, 3, [4, 5])
@@ -27,6 +32,8 @@ my_tuple[3][0] = 40
 my_tuple[3][1] = 50 
 print(my_tuple)
 
+# output (1,2,3,[40,50])
+
 # 6️⃣ Write a function that returns multiple values as a tuple.
 def calculate_values(a, b):
     sum_result = a + b
@@ -34,12 +41,13 @@ def calculate_values(a, b):
     difference_result = a - b
     return sum_result, product_result, difference_result  # Returns a tuple
 
+
 # Calling the function
 result = calculate_values(5, 3)
 
 print(result)  # Output: (8, 15, 2)
 
-# Unpacking the tuple
+# Unpacking the tuple | Destructuring in JS
 sum_val, product_val, diff_val = result
 print("Sum:", sum_val)       # Output: Sum: 8
 print("Product:", product_val)  # Output: Product: 15

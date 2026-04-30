@@ -1,23 +1,29 @@
 tea_types = ("Black","Green","Oolang")
 print(tea_types)
 print(len(tea_types))
+# output ('Black', 'Green', 'Oolang') 
+# 3
 
 more_tea = ("Herbal", "Earl Gray")
 all_tea = tea_types + more_tea
 print(all_tea)
+# output ('Black', 'Green', 'Oolang', 'Herbal', 'Earl Gray') 
 
 # if check
 if "Green" in all_tea:
     print("Green tea is available.")
 
+# output Green tea is available.
 
 #nested tuple 
 nested_tuple = (1, 2, (3, 4), [5, 6])
 print(nested_tuple)
+# output (1, 2, (3, 4), [5, 6])
 
 # tuple repetition
 t = (1, 2, 3)
 print(t * 3)
+# output (1, 2, 3, 1, 2, 3, 1, 2, 3)
 
 #Nested Unpacking - similar to destructuring in JS
 person = ("Alice", 25, ("Python", "JavaScript"))
