@@ -124,21 +124,75 @@ while num > 1:
 correct_pin = 1234
 attempts = 0
 
-while attempts < 3:
-    pin = int(input(f"Enter PIN (Attempt {attempts + 1}): "))
-    if pin == correct_pin:
-        print("Access granted")
-        break
-    else:
-        print("wrong pin try again")
-        attempts +=1
-        remaining = 3 - attempts
-        if remaining > 0:
-            print(f" You have {remaining} attempts left.")
-if attempts == 3:
-    print("Account locked")
-else:
-    print("Done")
+# while attempts < 3:
+#     pin = int(input(f"Enter PIN (Attempt {attempts + 1}): "))
+#     if pin == correct_pin:
+#         # print("Access granted")
+#         break
+#     else:
+#         print("wrong pin try again")
+#         attempts +=1
+#         remaining = 3 - attempts
+#         if remaining > 0:
+#             print(f" You have {remaining} attempts left.")
+# if attempts == 3:
+#     print("Account locked")
+# else:
+#     print("Done")
     
 
+# 14. Skip invalid product prices - Real-world use: Data cleaning for e-commerce.
+# Problem
+# You receive product prices from a scanner. If the price is negative, skip it. Stop when the user enters 0.
+# Print total price.
     
+total_price = 0
+# while True:
+#     price = float(input("Enter Price: "))
+#     if price == 0 :
+#         break
+#     if price < 0:
+#         print("Invalid price, skipping")
+#         continue
+
+#     total_price += price
+# print("Total Price is: ", total_price)
+
+
+
+#15. 3. Restaurant order system      - Real-world use: Taking orders until user says stop.
+#Problem
+#Keep asking the user to enter menu items. If they type "done", stop.If they type an empty string, skip.
+#Print the final order list.
+
+# final_order = []
+# while True:
+#     item = input("Enter menu item: ")
+#     if item.lower() == "done":1
+#         break
+#     if item.strip() == "":
+#         print("invalid ordder, skipping")
+#         continue
+#     final_order.append(item)
+
+# print("YourFinal order is: ", final_order)
+
+        
+
+# 16. Count how many students passed  - Real-world use: Processing exam scores.
+# Problem
+# Ask for student marks one by one. Stop when the user enters "-1". Ignore marks above 100 or below 0.
+# Count only marks >= 50 as pass. 
+
+count = 0
+while True:
+    marks = int(input("enter marks:"))
+    if marks == -1:
+        break
+    if marks > 100 or marks < 0:
+        print("invalid marks, skipping")
+        continue
+
+    if marks >= 50:
+        count += 1
+print("Total passing students are:", count)

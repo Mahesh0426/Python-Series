@@ -7,6 +7,7 @@ for num in numbers:
         positive_num_count += 1
 
 print("final count of positive num is",positive_num_count)
+#output: 5
 
 #2 Calculate the sum of even number up to a given number n
 num = 10
@@ -16,6 +17,7 @@ for i in range(1, num+1):
         sum_even += i
 
 print("sum of even number is",sum_even)
+#output: 30
 
 #3 Print the multiplication table for a given number up to 10, but skip the fifth iteration
 num = 3
@@ -25,6 +27,16 @@ for i in range(1,11):
         continue
     print(num, "x", i, "=", num*i)
 
+#output: 
+#3 x 1 = 3
+#3 x 2 = 6
+#3 x 3 = 9
+#3 x 4 = 12
+#3 x 6 = 18
+#3 x 7 = 21
+#3 x 8 = 24
+#3 x 9 = 27
+#3 x 10 = 30
 
 #4 reverse string using loop 
 
@@ -34,6 +46,8 @@ reverse_str= ""
 for char in str_input:
     reverse_str = char + reverse_str
 print(reverse_str)
+
+#output: olleh
 
 #5 find the first non repeated characdter
 # given a string, find tge first non repeated character
@@ -45,6 +59,8 @@ for char in input_str:
       print("char is:",char)
       break
 
+# output: char is: r
+
 #6 Factorial calculator
 # compute the factorials of a number using a while loop 
 number = 5
@@ -54,6 +70,8 @@ while number > 0:
     factorial = factorial * number
     number = number - 1
 print("Factorial:",factorial)
+# output: 120
+
 
 #7 Keep asking the user for input until they enter a number beth 1 and 10 
 while True:
@@ -63,7 +81,13 @@ while True:
         break
     else:
         print("Invalid number try again")
-
+# output: 
+# Enter value beth 1 and 10: 25
+# Invalid number try again
+# Enter value beth 1 and 10: 15
+# Invalid number try again
+# Enter value beth 1 and 10: 5
+# Thanks 
 
 #8 check the prime number 
 number = 27
@@ -88,6 +112,7 @@ for item in items:
         print("dublicate item is:",item)
         break
     unique_item.add(item)
+# output: dublicate item is: apple
 
 #10 implmment an exponential backoff strategy that doubles the wait time between retries, statrting from 1 second but stop  after 5 retries
 import time
