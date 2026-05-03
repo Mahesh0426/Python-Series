@@ -1,0 +1,1618 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python Code Visualizer</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 60px 1fr 80px;
+        height: 100vh;
+        gap: 1px;
+        background: #1e293b;
+      }
+
+      /* Header */
+      .header {
+        grid-column: 1 / -1;
+        background: #0f172a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        border-bottom: 1px solid #334155;
+      }
+
+      .logo {
+        font-size: 20px;
+        font-weight: 700;
+        color: #38bdf8;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo svg {
+        width: 28px;
+        height: 28px;
+      }
+
+      .header-controls {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .btn {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-primary {
+        background: #38bdf8;
+        color: #0f172a;
+      }
+
+      .btn-primary:hover {
+        background: #7dd3fc;
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        background: #334155;
+        color: #e2e8f0;
+      }
+
+      .btn-secondary:hover {
+        background: #475569;
+      }
+
+      .btn-danger {
+        background: #ef4444;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #f87171;
+      }
+
+      /* Code Panel */
+      .code-panel {
+        background: #1e1e2e;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #334155;
+      }
+
+      .panel-header {
+        padding: 12px 16px;
+        background: #252537;
+        border-bottom: 1px solid #334155;
+        font-size: 13px;
+        font-weight: 600;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .code-editor-wrapper {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .line-numbers {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 50px;
+        height: 100%;
+        background: #1e1e2e;
+        border-right: 1px solid #334155;
+        padding: 16px 0;
+        text-align: right;
+        padding-right: 12px;
+        font-family: "Consolas", "Monaco", monospace;
+        font-size: 14px;
+        line-height: 24px;
+        color: #64748b;
+        user-select: none;
+        overflow: hidden;
+      }
+
+      .code-editor {
+        width: 100%;
+        height: 100%;
+        padding: 16px 16px 16px 66px;
+        background: #1e1e2e;
+        border: none;
+        color: #e2e8f0;
+        font-family: "Consolas", "Monaco", monospace;
+        font-size: 14px;
+        line-height: 24px;
+        resize: none;
+        outline: none;
+        tab-size: 4;
+      }
+
+      /* Visualization Panel */
+      .viz-panel {
+        background: #0f172a;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .viz-canvas {
+        flex: 1;
+        position: relative;
+        overflow: auto;
+        padding: 24px;
+      }
+
+      /* Array Visualization */
+      .array-container {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        min-height: 200px;
+        padding: 40px 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .array-element {
+        width: 60px;
+        height: 60px;
+        background: #1e293b;
+        border: 2px solid #475569;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 700;
+        color: #e2e8f0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+
+      .array-element.active {
+        background: #38bdf8;
+        border-color: #7dd3fc;
+        color: #0f172a;
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+      }
+
+      .array-element.compare {
+        background: #fbbf24;
+        border-color: #f59e0b;
+        color: #0f172a;
+      }
+
+      .array-element.swap {
+        background: #a855f7;
+        border-color: #c084fc;
+        color: white;
+      }
+
+      .array-element.sorted {
+        background: #22c55e;
+        border-color: #4ade80;
+        color: white;
+      }
+
+      .array-element .index {
+        position: absolute;
+        bottom: -24px;
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 500;
+      }
+
+      /* Linked List Visualization */
+      .linked-list-container {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        padding: 60px 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .node {
+        display: flex;
+        align-items: center;
+        position: relative;
+      }
+
+      .node-box {
+        width: 80px;
+        height: 50px;
+        background: #1e293b;
+        border: 2px solid #475569;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #e2e8f0;
+        transition: all 0.4s;
+        position: relative;
+      }
+
+      .node-box.active {
+        background: #38bdf8;
+        border-color: #7dd3fc;
+        color: #0f172a;
+        transform: scale(1.1);
+      }
+
+      .node-box.new-node {
+        background: #22c55e;
+        border-color: #4ade80;
+        animation: popIn 0.5s ease;
+      }
+
+      .node-arrow {
+        width: 40px;
+        height: 2px;
+        background: #475569;
+        position: relative;
+        margin: 0 4px;
+      }
+
+      .node-arrow::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: -4px;
+        width: 0;
+        height: 0;
+        border-left: 8px solid #475569;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+      }
+
+      /* Stack Visualization */
+      .stack-container {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 4px;
+        padding: 40px;
+        min-height: 300px;
+        justify-content: flex-start;
+        border-bottom: 4px solid #475569;
+        border-left: 4px solid #475569;
+        border-right: 4px solid #475569;
+        border-radius: 0 0 12px 12px;
+        margin: 40px auto;
+        width: 200px;
+        position: relative;
+      }
+
+      .stack-container::before {
+        content: "TOP";
+        position: absolute;
+        top: -30px;
+        right: -50px;
+        font-size: 12px;
+        color: #38bdf8;
+        font-weight: 700;
+      }
+
+      .stack-element {
+        width: 180px;
+        height: 50px;
+        background: #1e293b;
+        border: 2px solid #475569;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #e2e8f0;
+        transition: all 0.4s;
+        animation: slideUp 0.4s ease;
+      }
+
+      .stack-element.active {
+        background: #38bdf8;
+        border-color: #7dd3fc;
+        color: #0f172a;
+      }
+
+      /* Queue Visualization */
+      .queue-container {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 60px 40px;
+        justify-content: center;
+        border-top: 4px solid #475569;
+        border-bottom: 4px solid #475569;
+        margin: 40px auto;
+        width: fit-content;
+        position: relative;
+      }
+
+      .queue-container::before {
+        content: "FRONT";
+        position: absolute;
+        top: -30px;
+        left: 20px;
+        font-size: 12px;
+        color: #22c55e;
+        font-weight: 700;
+      }
+
+      .queue-container::after {
+        content: "REAR";
+        position: absolute;
+        top: -30px;
+        right: 20px;
+        font-size: 12px;
+        color: #ef4444;
+        font-weight: 700;
+      }
+
+      .queue-element {
+        width: 80px;
+        height: 60px;
+        background: #1e293b;
+        border: 2px solid #475569;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #e2e8f0;
+        transition: all 0.4s;
+        animation: slideRight 0.4s ease;
+      }
+
+      .queue-element.active {
+        background: #38bdf8;
+        border-color: #7dd3fc;
+        color: #0f172a;
+      }
+
+      /* Tree Visualization */
+      .tree-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px;
+        gap: 40px;
+      }
+
+      .tree-level {
+        display: flex;
+        gap: 40px;
+        justify-content: center;
+        position: relative;
+      }
+
+      .tree-node {
+        width: 50px;
+        height: 50px;
+        background: #1e293b;
+        border: 2px solid #475569;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+        color: #e2e8f0;
+        transition: all 0.4s;
+        position: relative;
+        z-index: 2;
+      }
+
+      .tree-node.active {
+        background: #38bdf8;
+        border-color: #7dd3fc;
+        color: #0f172a;
+        transform: scale(1.2);
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+      }
+
+      .tree-node.visited {
+        background: #22c55e;
+        border-color: #4ade80;
+        color: white;
+      }
+
+      .tree-connection {
+        position: absolute;
+        background: #475569;
+        z-index: 1;
+      }
+
+      /* Variable Monitor */
+      .var-monitor {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 12px;
+        min-width: 180px;
+        font-size: 13px;
+      }
+
+      .var-monitor h4 {
+        color: #94a3b8;
+        margin-bottom: 8px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .var-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        border-bottom: 1px solid #334155;
+      }
+
+      .var-item:last-child {
+        border-bottom: none;
+      }
+
+      .var-name {
+        color: #38bdf8;
+      }
+
+      .var-value {
+        color: #fbbf24;
+        font-weight: 600;
+      }
+
+      /* Controls Bar */
+      .controls {
+        grid-column: 1 / -1;
+        background: #0f172a;
+        border-top: 1px solid #334155;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        padding: 0 24px;
+      }
+
+      .control-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .control-label {
+        font-size: 12px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      input[type="range"] {
+        width: 120px;
+        height: 4px;
+        background: #334155;
+        border-radius: 2px;
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #38bdf8;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      .step-counter {
+        font-size: 14px;
+        color: #94a3b8;
+        min-width: 100px;
+        text-align: center;
+      }
+
+      .step-counter span {
+        color: #38bdf8;
+        font-weight: 700;
+      }
+
+      /* Algorithm Selector */
+      .algo-selector {
+        display: flex;
+        gap: 8px;
+        padding: 4px;
+        background: #1e293b;
+        border-radius: 8px;
+      }
+
+      .algo-btn {
+        padding: 6px 14px;
+        border: none;
+        background: transparent;
+        color: #94a3b8;
+        font-size: 13px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .algo-btn:hover {
+        color: #e2e8f0;
+      }
+
+      .algo-btn.active {
+        background: #38bdf8;
+        color: #0f172a;
+        font-weight: 600;
+      }
+
+      /* Animations */
+      @keyframes popIn {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        80% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideRight {
+        from {
+          transform: translateX(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      /* Console Output */
+      .console-panel {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #0f172a;
+        border-top: 1px solid #334155;
+        max-height: 150px;
+        overflow-y: auto;
+        padding: 12px 16px;
+        font-family: "Consolas", monospace;
+        font-size: 13px;
+      }
+
+      .console-line {
+        padding: 2px 0;
+        color: #94a3b8;
+      }
+
+      .console-line.output {
+        color: #22c55e;
+      }
+
+      .console-line.error {
+        color: #ef4444;
+      }
+
+      /* Speed indicator */
+      .speed-display {
+        font-size: 12px;
+        color: #38bdf8;
+        min-width: 40px;
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .container {
+          grid-template-columns: 1fr;
+          grid-template-rows: 60px 1fr 1fr 80px;
+        }
+        .code-panel {
+          border-right: none;
+          border-bottom: 1px solid #334155;
+        }
+      }
+    </style>
+    <base target="_blank" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="header">
+        <div class="logo">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+          Python Visualizer
+        </div>
+        <div class="header-controls">
+          <div class="algo-selector">
+            <button class="algo-btn active" data-algo="bubble">
+              Bubble Sort
+            </button>
+            <button class="algo-btn" data-algo="selection">Selection</button>
+            <button class="algo-btn" data-algo="insertion">Insertion</button>
+            <button class="algo-btn" data-algo="quick">Quick Sort</button>
+            <button class="algo-btn" data-algo="stack">Stack</button>
+            <button class="algo-btn" data-algo="queue">Queue</button>
+            <button class="algo-btn" data-algo="linkedlist">Linked List</button>
+            <button class="algo-btn" data-algo="tree">Binary Tree</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="code-panel">
+        <div class="panel-header">
+          <span>Python Code</span>
+          <div style="display: flex; gap: 8px">
+            <button
+              class="btn btn-secondary"
+              onclick="loadExample()"
+              style="padding: 4px 12px; font-size: 12px"
+            >
+              Load Example
+            </button>
+            <button
+              class="btn btn-secondary"
+              onclick="clearCode()"
+              style="padding: 4px 12px; font-size: 12px"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+        <div class="code-editor-wrapper">
+          <div class="line-numbers" id="lineNumbers">1</div>
+          <textarea
+            class="code-editor"
+            id="codeEditor"
+            spellcheck="false"
+            placeholder="# Write your Python code here..."
+          >
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+    return arr
+
+arr = [64, 34, 25, 12, 22, 11, 90]
+bubble_sort(arr)</textarea
+          >
+        </div>
+      </div>
+
+      <div class="viz-panel">
+        <div class="panel-header">
+          <span>Visualization</span>
+          <div class="step-counter">
+            Step: <span id="stepCount">0</span> / <span id="totalSteps">0</span>
+          </div>
+        </div>
+        <div class="viz-canvas" id="vizCanvas">
+          <div class="array-container" id="arrayViz"></div>
+          <div class="var-monitor" id="varMonitor">
+            <h4>Variables</h4>
+            <div id="varList"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="control-group">
+          <button class="btn btn-primary" id="playBtn" onclick="togglePlay()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            Play
+          </button>
+          <button class="btn btn-secondary" onclick="stepBack()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z" />
+            </svg>
+            Step
+          </button>
+          <button class="btn btn-danger" onclick="resetViz()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"
+              />
+            </svg>
+            Reset
+          </button>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">Speed</span>
+          <input
+            type="range"
+            id="speedSlider"
+            min="1"
+            max="10"
+            value="5"
+            onchange="updateSpeed()"
+          />
+          <span class="speed-display" id="speedDisplay">1x</span>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">Data Size</span>
+          <input
+            type="range"
+            id="sizeSlider"
+            min="5"
+            max="20"
+            value="7"
+            onchange="updateDataSize()"
+          />
+          <span class="speed-display" id="sizeDisplay">7</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // State
+      let currentAlgo = "bubble";
+      let isPlaying = false;
+      let currentStep = 0;
+      let steps = [];
+      let playInterval = null;
+      let speed = 1000;
+      let dataSize = 7;
+
+      // DOM Elements
+      const codeEditor = document.getElementById("codeEditor");
+      const lineNumbers = document.getElementById("lineNumbers");
+      const vizCanvas = document.getElementById("vizCanvas");
+      const stepCount = document.getElementById("stepCount");
+      const totalSteps = document.getElementById("totalSteps");
+      const varList = document.getElementById("varList");
+      const playBtn = document.getElementById("playBtn");
+
+      // Algorithm Templates
+      const templates = {
+        bubble: `def bubble_sort(arr):
+          n = len(arr)
+          for i in range(n):
+              for j in range(0, n - i - 1):
+                  if arr[j] > arr[j + 1]:
+                      arr[j], arr[j + 1] = arr[j + 1], arr[j]
+          return arr
+
+      arr = [64, 34, 25, 12, 22, 11, 90]
+      bubble_sort(arr)`,
+        selection: `def selection_sort(arr):
+          n = len(arr)
+          for i in range(n):
+              min_idx = i
+              for j in range(i + 1, n):
+                  if arr[j] < arr[min_idx]:
+                      min_idx = j
+              arr[i], arr[min_idx] = arr[min_idx], arr[i]
+          return arr
+
+      arr = [64, 25, 12, 22, 11]
+      selection_sort(arr)`,
+        insertion: `def insertion_sort(arr):
+          for i in range(1, len(arr)):
+              key = arr[i]
+              j = i - 1
+              while j >= 0 and arr[j] > key:
+                  arr[j + 1] = arr[j]
+                  j -= 1
+              arr[j + 1] = key
+          return arr
+
+      arr = [12, 11, 13, 5, 6]
+      insertion_sort(arr)`,
+        quick: `def quick_sort(arr, low=0, high=None):
+          if high is None:
+              high = len(arr) - 1
+          if low < high:
+              pi = partition(arr, low, high)
+              quick_sort(arr, low, pi - 1)
+              quick_sort(arr, pi + 1, high)
+          return arr
+
+      def partition(arr, low, high):
+          pivot = arr[high]
+          i = low - 1
+          for j in range(low, high):
+              if arr[j] <= pivot:
+                  i += 1
+                  arr[i], arr[j] = arr[j], arr[i]
+          arr[i + 1], arr[high] = arr[high], arr[i + 1]
+          return i + 1
+
+      arr = [10, 7, 8, 9, 1, 5]
+      quick_sort(arr)`,
+        stack: `class Stack:
+          def __init__(self):
+              self.items = []
+
+          def push(self, item):
+              self.items.append(item)
+
+          def pop(self):
+              if not self.is_empty():
+                  return self.items.pop()
+
+          def is_empty(self):
+              return len(self.items) == 0
+
+      stack = Stack()
+      stack.push(10)
+      stack.push(20)
+      stack.push(30)
+      stack.pop()
+      stack.push(40)`,
+        queue: `class Queue:
+          def __init__(self):
+              self.items = []
+
+          def enqueue(self, item):
+              self.items.append(item)
+
+          def dequeue(self):
+              if not self.is_empty():
+                  return self.items.pop(0)
+
+          def is_empty(self):
+              return len(self.items) == 0
+
+      queue = Queue()
+      queue.enqueue(10)
+      queue.enqueue(20)
+      queue.enqueue(30)
+      queue.dequeue()
+      queue.enqueue(40)`,
+        linkedlist: `class Node:
+          def __init__(self, data):
+              self.data = data
+              self.next = None
+
+      class LinkedList:
+          def __init__(self):
+              self.head = None
+
+          def append(self, data):
+              new_node = Node(data)
+              if not self.head:
+                  self.head = new_node
+                  return
+              curr = self.head
+              while curr.next:
+                  curr = curr.next
+              curr.next = new_node
+
+      ll = LinkedList()
+      ll.append(10)
+      ll.append(20)
+      ll.append(30)
+      ll.append(40)`,
+        tree: `class TreeNode:
+          def __init__(self, val=0):
+              self.val = val
+              self.left = None
+              self.right = None
+
+      def insert(root, val):
+          if not root:
+              return TreeNode(val)
+          if val < root.val:
+              root.left = insert(root.left, val)
+          else:
+              root.right = insert(root.right, val)
+          return root
+
+      root = None
+      values = [50, 30, 70, 20, 40, 60, 80]
+      for v in values:
+          root = insert(root, v)`,
+      };
+
+      // Line numbers sync
+      codeEditor.addEventListener("input", updateLineNumbers);
+      codeEditor.addEventListener("scroll", () => {
+        lineNumbers.scrollTop = codeEditor.scrollTop;
+      });
+
+      function updateLineNumbers() {
+        const lines = codeEditor.value.split("\n").length;
+        lineNumbers.innerHTML = Array.from(
+          { length: lines },
+          (_, i) => i + 1,
+        ).join("<br>");
+      }
+
+      updateLineNumbers();
+
+      // Algorithm selector
+      document.querySelectorAll(".algo-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".algo-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentAlgo = btn.dataset.algo;
+          codeEditor.value = templates[currentAlgo];
+          updateLineNumbers();
+          resetViz();
+        });
+      });
+
+      // Visualization Engine
+      function generateSteps() {
+        steps = [];
+        const code = codeEditor.value;
+
+        // Parse the code and generate visualization steps
+        // This is a simplified simulation for demonstration
+
+        if (currentAlgo.includes("sort")) {
+          generateSortingSteps();
+        } else if (currentAlgo === "stack") {
+          generateStackSteps();
+        } else if (currentAlgo === "queue") {
+          generateQueueSteps();
+        } else if (currentAlgo === "linkedlist") {
+          generateLinkedListSteps();
+        } else if (currentAlgo === "tree") {
+          generateTreeSteps();
+        }
+
+        totalSteps.textContent = steps.length;
+      }
+
+      function generateSortingSteps() {
+        let arr = generateRandomArray(dataSize);
+        const n = arr.length;
+
+        // Initial state
+        steps.push({
+          type: "array",
+          data: [...arr],
+          highlights: [],
+          vars: { arr: `[${arr.join(", ")}]`, n: n },
+        });
+
+        if (currentAlgo === "bubble") {
+          for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n - i - 1; j++) {
+              steps.push({
+                type: "array",
+                data: [...arr],
+                highlights: [
+                  { idx: j, type: "compare" },
+                  { idx: j + 1, type: "compare" },
+                ],
+                vars: { i: i, j: j, "arr[j]": arr[j], "arr[j+1]": arr[j + 1] },
+              });
+
+              if (arr[j] > arr[j + 1]) {
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                steps.push({
+                  type: "array",
+                  data: [...arr],
+                  highlights: [
+                    { idx: j, type: "swap" },
+                    { idx: j + 1, type: "swap" },
+                  ],
+                  vars: { i: i, j: j, swapped: "true" },
+                });
+              }
+            }
+            // Mark sorted
+            const sortedHighlights = [];
+            for (let k = n - i - 1; k < n; k++) {
+              sortedHighlights.push({ idx: k, type: "sorted" });
+            }
+            steps.push({
+              type: "array",
+              data: [...arr],
+              highlights: sortedHighlights,
+              vars: { i: i, sorted_up_to: n - i - 1 },
+            });
+          }
+        } else if (currentAlgo === "selection") {
+          for (let i = 0; i < n; i++) {
+            let minIdx = i;
+            steps.push({
+              type: "array",
+              data: [...arr],
+              highlights: [{ idx: i, type: "active" }],
+              vars: { i: i, min_idx: minIdx },
+            });
+
+            for (let j = i + 1; j < n; j++) {
+              steps.push({
+                type: "array",
+                data: [...arr],
+                highlights: [
+                  { idx: minIdx, type: "compare" },
+                  { idx: j, type: "compare" },
+                ],
+                vars: {
+                  i: i,
+                  j: j,
+                  min_idx: minIdx,
+                  "arr[min]": arr[minIdx],
+                  "arr[j]": arr[j],
+                },
+              });
+              if (arr[j] < arr[minIdx]) {
+                minIdx = j;
+                steps.push({
+                  type: "array",
+                  data: [...arr],
+                  highlights: [{ idx: minIdx, type: "active" }],
+                  vars: { i: i, new_min: minIdx },
+                });
+              }
+            }
+
+            if (minIdx !== i) {
+              [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+              steps.push({
+                type: "array",
+                data: [...arr],
+                highlights: [
+                  { idx: i, type: "swap" },
+                  { idx: minIdx, type: "swap" },
+                ],
+                vars: { i: i, min_idx: minIdx, swapped: "true" },
+              });
+            }
+
+            const sortedHighlights = [];
+            for (let k = 0; k <= i; k++)
+              sortedHighlights.push({ idx: k, type: "sorted" });
+            steps.push({
+              type: "array",
+              data: [...arr],
+              highlights: sortedHighlights,
+              vars: { i: i },
+            });
+          }
+        } else if (currentAlgo === "insertion") {
+          for (let i = 1; i < n; i++) {
+            let key = arr[i];
+            let j = i - 1;
+
+            steps.push({
+              type: "array",
+              data: [...arr],
+              highlights: [{ idx: i, type: "active" }],
+              vars: { i: i, key: key, j: j },
+            });
+
+            while (j >= 0 && arr[j] > key) {
+              steps.push({
+                type: "array",
+                data: [...arr],
+                highlights: [
+                  { idx: j, type: "compare" },
+                  { idx: j + 1, type: "compare" },
+                ],
+                vars: { key: key, j: j, "arr[j]": arr[j] },
+              });
+              arr[j + 1] = arr[j];
+              j--;
+              steps.push({
+                type: "array",
+                data: [...arr],
+                highlights: [{ idx: j + 1, type: "swap" }],
+                vars: { key: key, j: j },
+              });
+            }
+            arr[j + 1] = key;
+            steps.push({
+              type: "array",
+              data: [...arr],
+              highlights: [{ idx: j + 1, type: "sorted" }],
+              vars: { i: i, inserted_at: j + 1 },
+            });
+          }
+        }
+
+        // Final sorted state
+        const allSorted = arr.map((_, i) => ({ idx: i, type: "sorted" }));
+        steps.push({
+          type: "array",
+          data: [...arr],
+          highlights: allSorted,
+          vars: { status: "Sorted!" },
+        });
+      }
+
+      function generateStackSteps() {
+        let stack = [];
+        const operations = [10, 20, 30, "pop", 40];
+
+        steps.push({
+          type: "stack",
+          data: [],
+          highlights: [],
+          vars: { stack: "[]", operation: "init" },
+        });
+
+        for (let op of operations) {
+          if (op === "pop") {
+            if (stack.length > 0) {
+              steps.push({
+                type: "stack",
+                data: [...stack],
+                highlights: [{ idx: stack.length - 1, type: "active" }],
+                vars: { operation: "pop", top: stack[stack.length - 1] },
+              });
+              stack.pop();
+            }
+          } else {
+            stack.push(op);
+            steps.push({
+              type: "stack",
+              data: [...stack],
+              highlights: [{ idx: stack.length - 1, type: "active" }],
+              vars: { operation: `push(${op})`, top: op, size: stack.length },
+            });
+          }
+          steps.push({
+            type: "stack",
+            data: [...stack],
+            highlights: [],
+            vars: { stack: `[${stack.join(", ")}]`, size: stack.length },
+          });
+        }
+      }
+
+      function generateQueueSteps() {
+        let queue = [];
+        const operations = [10, 20, 30, "dequeue", 40];
+
+        steps.push({
+          type: "queue",
+          data: [],
+          highlights: [],
+          vars: { queue: "[]", operation: "init" },
+        });
+
+        for (let op of operations) {
+          if (op === "dequeue") {
+            if (queue.length > 0) {
+              steps.push({
+                type: "queue",
+                data: [...queue],
+                highlights: [{ idx: 0, type: "active" }],
+                vars: { operation: "dequeue", front: queue[0] },
+              });
+              queue.shift();
+            }
+          } else {
+            queue.push(op);
+            steps.push({
+              type: "queue",
+              data: [...queue],
+              highlights: [{ idx: queue.length - 1, type: "active" }],
+              vars: {
+                operation: `enqueue(${op})`,
+                rear: op,
+                size: queue.length,
+              },
+            });
+          }
+          steps.push({
+            type: "queue",
+            data: [...queue],
+            highlights: [],
+            vars: { queue: `[${queue.join(", ")}]`, size: queue.length },
+          });
+        }
+      }
+
+      function generateLinkedListSteps() {
+        let nodes = [];
+        const values = [10, 20, 30, 40];
+
+        steps.push({
+          type: "linkedlist",
+          data: [],
+          highlights: [],
+          vars: { head: "null" },
+        });
+
+        for (let val of values) {
+          nodes.push(val);
+          steps.push({
+            type: "linkedlist",
+            data: [...nodes],
+            highlights: [{ idx: nodes.length - 1, type: "new-node" }],
+            vars: { operation: `append(${val})`, tail: val },
+          });
+          steps.push({
+            type: "linkedlist",
+            data: [...nodes],
+            highlights: [],
+            vars: { list: nodes.join(" -> ") + " -> null" },
+          });
+        }
+      }
+
+      function generateTreeSteps() {
+        // Simplified BST insertion visualization
+        const values = [50, 30, 70, 20, 40, 60, 80];
+        let tree = [];
+
+        steps.push({
+          type: "tree",
+          data: [],
+          highlights: [],
+          vars: { root: "null" },
+        });
+
+        for (let val of values) {
+          tree.push(val);
+          steps.push({
+            type: "tree",
+            data: [...tree],
+            highlights: [{ idx: tree.length - 1, type: "active" }],
+            vars: { inserting: val, tree: tree.join(", ") },
+          });
+          steps.push({
+            type: "tree",
+            data: [...tree],
+            highlights: [],
+            vars: { tree: tree.join(", ") },
+          });
+        }
+      }
+
+      function generateRandomArray(size) {
+        return Array.from(
+          { length: size },
+          () => Math.floor(Math.random() * 90) + 10,
+        );
+      }
+
+      function renderStep(step) {
+        vizCanvas.innerHTML = "";
+
+        if (step.type === "array") {
+          renderArray(step);
+        } else if (step.type === "stack") {
+          renderStack(step);
+        } else if (step.type === "queue") {
+          renderQueue(step);
+        } else if (step.type === "linkedlist") {
+          renderLinkedList(step);
+        } else if (step.type === "tree") {
+          renderTree(step);
+        }
+
+        // Update variables
+        updateVariables(step.vars);
+        stepCount.textContent = currentStep + 1;
+      }
+
+      function renderArray(step) {
+        const container = document.createElement("div");
+        container.className = "array-container";
+
+        step.data.forEach((val, idx) => {
+          const el = document.createElement("div");
+          el.className = "array-element";
+          el.textContent = val;
+
+          const indexLabel = document.createElement("span");
+          indexLabel.className = "index";
+          indexLabel.textContent = idx;
+          el.appendChild(indexLabel);
+
+          const highlight = step.highlights.find((h) => h.idx === idx);
+          if (highlight) {
+            el.classList.add(highlight.type);
+          }
+
+          container.appendChild(el);
+        });
+
+        vizCanvas.appendChild(container);
+      }
+
+      function renderStack(step) {
+        const container = document.createElement("div");
+        container.className = "stack-container";
+
+        step.data.forEach((val, idx) => {
+          const el = document.createElement("div");
+          el.className = "stack-element";
+          el.textContent = val;
+
+          const highlight = step.highlights.find((h) => h.idx === idx);
+          if (highlight) {
+            el.classList.add(highlight.type);
+          }
+
+          container.appendChild(el);
+        });
+
+        vizCanvas.appendChild(container);
+      }
+
+      function renderQueue(step) {
+        const container = document.createElement("div");
+        container.className = "queue-container";
+
+        step.data.forEach((val, idx) => {
+          const el = document.createElement("div");
+          el.className = "queue-element";
+          el.textContent = val;
+
+          const highlight = step.highlights.find((h) => h.idx === idx);
+          if (highlight) {
+            el.classList.add(highlight.type);
+          }
+
+          container.appendChild(el);
+        });
+
+        vizCanvas.appendChild(container);
+      }
+
+      function renderLinkedList(step) {
+        const container = document.createElement("div");
+        container.className = "linked-list-container";
+
+        step.data.forEach((val, idx) => {
+          const node = document.createElement("div");
+          node.className = "node";
+
+          const box = document.createElement("div");
+          box.className = "node-box";
+          box.textContent = val;
+
+          const highlight = step.highlights.find((h) => h.idx === idx);
+          if (highlight) {
+            box.classList.add(highlight.type);
+          }
+
+          node.appendChild(box);
+
+          if (idx < step.data.length - 1) {
+            const arrow = document.createElement("div");
+            arrow.className = "node-arrow";
+            node.appendChild(arrow);
+          }
+
+          container.appendChild(node);
+        });
+
+        vizCanvas.appendChild(container);
+      }
+
+      function renderTree(step) {
+        const container = document.createElement("div");
+        container.className = "tree-container";
+
+        // Simple level-order display for demo
+        const levels = Math.ceil(Math.log2(step.data.length + 1));
+        let idx = 0;
+
+        for (let level = 0; level < levels && idx < step.data.length; level++) {
+          const levelDiv = document.createElement("div");
+          levelDiv.className = "tree-level";
+
+          const nodesInLevel = Math.min(
+            Math.pow(2, level),
+            step.data.length - idx,
+          );
+          for (let i = 0; i < nodesInLevel; i++) {
+            const node = document.createElement("div");
+            node.className = "tree-node";
+            node.textContent = step.data[idx];
+
+            const highlight = step.highlights.find((h) => h.idx === idx);
+            if (highlight) {
+              node.classList.add(highlight.type);
+            }
+
+            levelDiv.appendChild(node);
+            idx++;
+          }
+
+          container.appendChild(levelDiv);
+        }
+
+        vizCanvas.appendChild(container);
+      }
+
+      function updateVariables(vars) {
+        varList.innerHTML = "";
+        for (let [key, val] of Object.entries(vars)) {
+          const item = document.createElement("div");
+          item.className = "var-item";
+          item.innerHTML = `<span class="var-name">${key}</span><span class="var-value">${val}</span>`;
+          varList.appendChild(item);
+        }
+      }
+
+      // Controls
+      function togglePlay() {
+        if (isPlaying) {
+          pause();
+        } else {
+          play();
+        }
+      }
+
+      function play() {
+        if (steps.length === 0) generateSteps();
+        if (currentStep >= steps.length - 1) currentStep = 0;
+
+        isPlaying = true;
+        playBtn.innerHTML = `
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                      </svg>
+                      Pause
+                  `;
+
+        playInterval = setInterval(() => {
+          if (currentStep < steps.length) {
+            renderStep(steps[currentStep]);
+            currentStep++;
+          } else {
+            pause();
+          }
+        }, speed);
+      }
+
+      function pause() {
+        isPlaying = false;
+        clearInterval(playInterval);
+        playBtn.innerHTML = `
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M8 5v14l11-7z"/>
+                      </svg>
+                      Play
+                  `;
+      }
+
+      function stepBack() {
+        pause();
+        if (steps.length === 0) generateSteps();
+        if (currentStep > 0) {
+          currentStep--;
+          renderStep(steps[currentStep]);
+        }
+      }
+
+      function resetViz() {
+        pause();
+        currentStep = 0;
+        steps = [];
+        generateSteps();
+        if (steps.length > 0) {
+          renderStep(steps[0]);
+        }
+      }
+
+      function updateSpeed() {
+        const slider = document.getElementById("speedSlider");
+        const display = document.getElementById("speedDisplay");
+        const val = parseInt(slider.value);
+        speed = 2000 - val * 180; // 200ms to 1820ms
+        display.textContent = val + "x";
+
+        if (isPlaying) {
+          pause();
+          play();
+        }
+      }
+
+      function updateDataSize() {
+        const slider = document.getElementById("sizeSlider");
+        const display = document.getElementById("sizeDisplay");
+        dataSize = parseInt(slider.value);
+        display.textContent = dataSize;
+        resetViz();
+      }
+
+      function loadExample() {
+        codeEditor.value = templates[currentAlgo];
+        updateLineNumbers();
+        resetViz();
+      }
+
+      function clearCode() {
+        codeEditor.value = "";
+        updateLineNumbers();
+        vizCanvas.innerHTML =
+          '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #64748b; font-size: 16px;">Write code and click Play to visualize</div>';
+        steps = [];
+        currentStep = 0;
+        stepCount.textContent = "0";
+        totalSteps.textContent = "0";
+        varList.innerHTML = "";
+      }
+
+      // Initialize
+      resetViz();
+    </script>
+  </body>
+</html>

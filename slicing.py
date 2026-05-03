@@ -19,6 +19,8 @@ print(num_list[4:8]) #4567
 #4. Get every 2nd character from the full string
 print(num_list[::2]) #02468
 
+print(num_list[::-1]) #9876543210
+
 #5. Slice the first half of the string
 print(num_list[:5]) #01234
 
