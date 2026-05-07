@@ -122,4 +122,124 @@ Python provides a variety of built-in data types that allow developers to work w
 
 1. **NoneType**: Represents the absence of a value (`None`).
 
+example
+
+```python
+def get_amount(prompt):
+    try:
+        amount = float(input(prompt))
+        return amount          # ✅ returns a valid number
+    except ValueError:
+        print("\n  ❌ Invalid amount. Please enter a number.")
+        return None            # ❌ returns None (signals failure)
+```
+
+### What is None?
+
+`None` is Python's way of saying "nothing" / "no value" / "empty". It's not zero, not False, not an empty string — it literally means nothing exists here.
+
+```python
+x = None
+print(x)        # Output: None
+print(type(x))  # Output: <class 'NoneType'>
+```
+
+### Why return None here?
+
+The function has two possible outcomes:
+
+```
+User types "500"  → float("500") works  → return 500    ✅ (a real number)
+User types "abc"  → float("abc") crashes → return None  ❌ (signals "it failed")
+```
+
+We use return None as a signal/flag to the caller saying — "something went wrong, I have no valid number to give you."
+
+## not keyword
+
+The `not` keyword is used in Python for **logical negation**. It reverses the truth value of a condition or expression.
+
+##### What does not do?
+
+not reverses/flips the truth value of something.
+
+```python
+not True → False
+not False → True
+```
+
+##### What does not transactions mean?
+
+In Python, an empty list [] is considered False, and a list with items is considered True
+
+```python
+transactions = []         # Empty list → False
+not transactions          # not False  → True  ✅ (enters the if block)
+
+transactions = ["something"]  # Has items → True
+not transactions              # not True  → False ❌ (skips the if block)
+```
+
+##### You could also write it this way (same meaning):
+
+```python
+if len(transactions) == 0:   # longer way
+    print("No transactions yet.")
+
+if not transactions:          # shorter, more Pythonic way ✅
+    print("No transactions yet.")
+```
+
+| **Original Expression** | **Python Translation** | **Reason**        |
+| ----------------------- | ---------------------- | ----------------- |
+| `x is not None`         | `x is not None`        | Identity operator |
+| `x is not True`         | `x is not True`        | Identity operator |
+| `x is not False`        | `x is not False`       | Identity operator |
+| `x != 0`                | `x != 0`               | Equality operator |
+| `x != 1`                | `x != 1`               | Equality operator |
+| `""`                    | `""` or `''`           | Empty string      |
+| `[]`                    | `[]`                   | Empty list        |
+| `{}`                    | `{}`                   | Empty dict        |
+| `None`                  | `None`                 | `None` value      |
+| `True`                  | `True`                 | `True` boolean    |
+| `False`                 | `False`                | `False` boolean   |
+
+# is not None:
+
+`is not None` checks if a value is **not** `None`. It's the Pythonic way to handle cases where a function might return `None` to indicate failure.
+
+```python
+amount = get_amount("  Enter deposit amount: $")
+if amount is not None:
+    deposit(amount)
+```
+
+##### Why check is not None?
+
+After calling get_amount(), amount will be one of two things:
+
+```
+amount = 500.0   → valid number  → safe to deposit ✅
+amount = None    → user typed garbage → DO NOT deposit ❌
+```
+
+##### So we check before calling deposit():
+
+```
+if amount is not None:
+         ↓
+Is amount a real number? → Yes → call deposit(amount) ✅
+Is amount None?          → No  → skip deposit, do nothing ❌
+```
+
+##### Why use is not instead of != None?
+
+```python
+if amount is not None:   # ✅ Correct Pythonic way
+if amount != None:       # ⚠️  Works but not recommended
+```
+
+**`is`** checks for **object identity** (are these the exact same object in memory?).
+**`!=`** checks for **inequality** (are these different values?).
+
 ---
